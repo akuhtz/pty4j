@@ -107,14 +107,15 @@ public class PtyUtil {
     public static File resolveNativeFile(File parent, String fileName) {
         final File path = new File(parent, getPlatformFolder());
 
-        String arch = Platform.is64Bit() ? "x86_64" : "x86";
+        // String arch = Platform.is64Bit() ? "x86_64" : "x86";
+        String arch = Platform.is64Bit() ? "x86-64" : "x86";
         String prefix = isWinXp() ? "xp" : arch;
 
         if (new File(parent, prefix).exists()) {
             return new File(new File(parent, prefix), fileName);
         }
         else {
-            return new File(new File(path, prefix), fileName);
+            return new File(new File(path + "-" + prefix), fileName);
         }
     }
 
@@ -125,7 +126,7 @@ public class PtyUtil {
             result = "macosx";
         }
         else if (Platform.isWindows()) {
-            result = "win";
+            result = "win32";
         }
         else if (Platform.isLinux()) {
             result = "linux";

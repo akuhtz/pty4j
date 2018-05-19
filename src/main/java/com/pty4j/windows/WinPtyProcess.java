@@ -1,28 +1,34 @@
 package com.pty4j.windows;
 
-import com.pty4j.PtyException;
-import com.pty4j.PtyProcess;
-import com.pty4j.WinSize;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import com.pty4j.PtyException;
+import com.pty4j.PtyProcess;
+import com.pty4j.WinSize;
 
 /**
  * @author traff
  */
 public class WinPtyProcess extends PtyProcess {
     private final WinPty myWinPty;
+
     private final WinPTYInputStream myInputStream;
+
     private final InputStream myErrorStream;
+
     private final WinPTYOutputStream myOutputStream;
 
     private boolean myUsedInputStream = false;
+
     private boolean myUsedOutputStream = false;
+
     private boolean myUsedErrorStream = false;
 
     @Deprecated
-    public WinPtyProcess(String[] command, String[] environment, String workingDirectory, boolean consoleMode) throws IOException {
+    public WinPtyProcess(String[] command, String[] environment, String workingDirectory, boolean consoleMode)
+        throws IOException {
         this(command, convertEnvironment(environment), workingDirectory, consoleMode);
     }
 
@@ -35,10 +41,13 @@ public class WinPtyProcess extends PtyProcess {
         return envString.toString();
     }
 
-    public WinPtyProcess(String[] command, String environment, String workingDirectory, boolean consoleMode) throws IOException {
+    public WinPtyProcess(String[] command, String environment, String workingDirectory, boolean consoleMode)
+        throws IOException {
         try {
-            myWinPty = new WinPty(joinCmdArgs(command), workingDirectory, environment, consoleMode);
-        } catch (PtyException e) {
+            String cmdArgs = joinCmdArgs(command);
+            myWinPty = new WinPty(cmdArgs, workingDirectory, environment, consoleMode);
+        }
+        catch (PtyException e) {
             throw new IOException("Couldn't create PTY", e);
         }
         myInputStream = new WinPTYInputStream(myWinPty, myWinPty.getInputPipe());
@@ -50,7 +59,8 @@ public class WinPtyProcess extends PtyProcess {
                     return -1;
                 }
             };
-        } else {
+        }
+        else {
             myErrorStream = new WinPTYInputStream(myWinPty, myWinPty.getErrorPipe());
         }
     }
@@ -61,7 +71,8 @@ public class WinPtyProcess extends PtyProcess {
         for (String s : commands) {
             if (flag) {
                 cmd.append(' ');
-            } else {
+            }
+            else {
                 flag = true;
             }
 
@@ -73,10 +84,12 @@ public class WinPtyProcess extends PtyProcess {
                         cmd.append("\\");
                     }
                     cmd.append('"');
-                } else {
+                }
+                else {
                     cmd.append(s);
                 }
-            } else {
+            }
+            else {
                 cmd.append(s);
             }
         }
@@ -96,7 +109,7 @@ public class WinPtyProcess extends PtyProcess {
 
     @Override
     public WinSize getWinSize() throws IOException {
-        return null; //TODO
+        return null; // TODO
     }
 
     @Override
@@ -144,17 +157,23 @@ public class WinPtyProcess extends PtyProcess {
         if (!myUsedInputStream) {
             try {
                 myInputStream.close();
-            } catch (IOException e) { }
+            }
+            catch (IOException e) {
+            }
         }
         if (!myUsedOutputStream) {
             try {
                 myOutputStream.close();
-            } catch (IOException e) { }
+            }
+            catch (IOException e) {
+            }
         }
         if (!myUsedErrorStream) {
             try {
                 myErrorStream.close();
-            } catch (IOException e) { }
+            }
+            catch (IOException e) {
+            }
         }
     }
 }
